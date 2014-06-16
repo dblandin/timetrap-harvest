@@ -25,7 +25,7 @@ describe 'Timetrap::Formatters::Harvest' do
       formatter = Timetrap::Formatters::Harvest.new(entries)
       formatter.client = fake_client
 
-      config = { 'harvest_aliases' => { 'design' => '123456 987654' } }
+      config = { 'harvest' => { 'aliases' => { 'design' => '123456 987654' } } }
 
       formatter.timetrap_config = config
 
