@@ -6,6 +6,8 @@ module Timetrap;
 end
 
 class HarvestClient
+  HARVEST_ADD_URI = URI('https://dscout.harvestapp.com/daily/add')
+
   attr_reader :email, :password
 
   def initialize(email, password)
@@ -13,25 +15,16 @@ class HarvestClient
     @password = password
   end
 
-  def submit(entry, project_id, task_id)
-    req = Net::HTTP::Post.new(uri)
-    req.basic_auth(username, password)
-    req.body            = payload(entry, project_id, task_id).to_json
+  def post(payload)
+    req = Net::HTTP::Post.new(HARVEST_ADD_URI.request_uri)
+    req.basic_auth(email, password)
+    req.body            = payload.to_json
     req['Content-Type'] = 'application/json'
     req['Accept']       = 'application/json'
 
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+    res = Net::HTTP.start(HARVEST_ADD_URI.hostname, HARVEST_ADD_URI.port, use_ssl: true) do |http|
       http.request(req)
     end
-  end
-
-  def payload(entry, project_id, task_id)
-    { notes:      entry[:notes],
-      hours:      '1',
-      project_id: project_id,
-      task_id:    task_id,
-      spent_at:   'Fri, 13 Jun 2014'
-    }
   end
 end
 
@@ -46,11 +39,11 @@ class Timetrap::Formatters::Harvest
   end
 
   def client
-    @client ||= HarvestClient.new(harvest_username, harvest_password)
+    @client ||= HarvestClient.new(harvest_email, harvest_password)
   end
 
-  def harvest_username
-    Timetrap::Config['harvest']['username']
+  def harvest_email
+    Timetrap::Config['harvest']['email']
   end
 
   def harvest_password
@@ -58,21 +51,42 @@ class Timetrap::Formatters::Harvest
   end
 
   def output
+    entries_to_output = []
+
     harvest_entries do |entry, code|
       if info = info_for_code(code)
-        client.submit(entry, info.project_id, info.task_id)
+        payload = format(entry, info.project_id, info.task_id)
+
+        client.post(payload)
+
+        entries_to_output << entry
       end
     end
 
-    entries.map { |entry| entry[:note] }.join("\n")
+    entries_to_output.map { |entry| "Submitted: #{entry[:note]}" }.join("\n")
   end
 
   def harvest_entries
     entries.each do |entry|
-      if match = HARVESTABLE_REGEX.match(entry[:note])
-        yield entry, match[1]
+      if entry[:start] && entry[:end]
+        if match = HARVESTABLE_REGEX.match(entry[:note])
+          yield entry, match[1]
+        end
       end
     end
+  end
+
+  def format(entry, project_id, task_id)
+    { notes:      entry[:note],
+      hours:      hours_for_time(entry[:start], entry[:end]),
+      project_id: project_id,
+      task_id:    task_id,
+      spent_at:   entry[:start].strftime('%Y%m%d')
+    }
+  end
+
+  def hours_for_time(start_time, end_time)
+    ((end_time - start_time) / 3600).round
   end
 
   private
@@ -93,3 +107,4 @@ class Timetrap::Formatters::Harvest
     @timetrap_config ||= Timetrap::Config
   end
 end
+
