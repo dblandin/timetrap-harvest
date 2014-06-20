@@ -39,7 +39,8 @@ class HarvestClient
 end
 
 class Timetrap::Formatters::Harvest
-  HARVESTABLE_REGEX = /@(.*)/
+  HARVESTABLE_REGEX        = /@(.*)/
+  DEFAULT_ROUND_IN_MINUTES = 15
 
   attr_reader :entries
   attr_writer :client, :timetrap_config
@@ -96,7 +97,13 @@ class Timetrap::Formatters::Harvest
   end
 
   def hours_for_time(start_time, end_time)
-    ((end_time - start_time) / 3600).round
+    minutes = (end_time - start_time) / 60
+    rounded = round(minutes)
+    hours   = (rounded / 60)
+  end
+
+  def round(minutes, nearest = round_in_minutes)
+    (minutes % nearest).zero? ? minutes : (minutes + nearest) - (minutes % nearest)
   end
 
   private
@@ -109,6 +116,10 @@ class Timetrap::Formatters::Harvest
     end
   end
 
+  def round_in_minutes
+    @round_in_seconds ||= timetrap_config['harvest']['round_in_minutes'] || DEFAULT_ROUND_IN_MINUTES
+  end
+
   def harvest_aliases
     @harvest_aliases ||= timetrap_config['harvest']['aliases']
   end
@@ -117,4 +128,3 @@ class Timetrap::Formatters::Harvest
     @timetrap_config ||= Timetrap::Config
   end
 end
-
