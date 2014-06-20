@@ -23,22 +23,22 @@ class Timetrap::Formatters::Harvest
   end
 
   def output
-    output_messages = []
+    submitted = []
+    failed    = []
 
     harvest_entries do |harvestable|
-      if options = config.alias_config(harvestable.code)
-        options = options.merge(round_in_minutes: config.round_in_minutes)
+      payload = HarvestFormatter.new(harvestable.entry, config).format
 
-        payload = HarvestFormatter.new(harvestable.entry, options).format
-          client.post(payload)
-
-          output_messages << success(harvestable.entry)
+      if payload.key? :error
+        failed << { error: payload[:error], note: harvestable.entry[:note] }
       else
-        output_messages << missing_code(harvestable.entry)
+        client.post(payload)
+
+        submitted << { note: harvestable.entry[:note] }
       end
     end
 
-    output_messages.join("\n")
+    HarvestOutput.new(submitted: submitted, failed: failed).generate
   end
 
   private

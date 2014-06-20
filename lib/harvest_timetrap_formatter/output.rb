@@ -11,10 +11,16 @@ class HarvestOutput
 
   def generate
     messages = [stats]
-    messages << SUBMITTED_HEADER
-    messages += submitted.map { |submitted| success_message(submitted[:note]) }
-    messages << FAILED_HEADER
-    messages += failed.map { |failed| failed_message(failed[:note], failed[:error]) }
+
+    unless submitted.empty?
+      messages << SUBMITTED_HEADER
+      messages += submitted.map { |submitted| success_message(submitted[:note]) }
+    end
+
+    unless failed.empty?
+      messages << FAILED_HEADER
+      messages += failed.map { |failed| failed_message(failed[:note], failed[:error]) }
+    end
 
     messages.join("\n")
   end

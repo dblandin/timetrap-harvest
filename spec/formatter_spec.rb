@@ -2,6 +2,15 @@ require_relative '../lib/harvest_timetrap_formatter/formatter'
 require 'ostruct'
 
 describe 'HarvestFormatter' do
+  let(:config) do
+    HarvestConfig.new({
+      'harvest' => {
+        'aliases' => { 'design' => '1234 4321' },
+        'round_in_minutes' => 15
+      }
+    })
+  end
+
   describe '#format' do
     it 'formats entries for the harvest api' do
       start = Time.local(2014, 06, 17)
@@ -14,7 +23,7 @@ describe 'HarvestFormatter' do
 
       options = { project_id: '1234', task_id: '4321' }
 
-      formatter = HarvestFormatter.new(entry, options)
+      formatter = HarvestFormatter.new(entry, config)
 
       expect(formatter.format).to include({
         notes: entry[:note],
@@ -36,7 +45,7 @@ describe 'HarvestFormatter' do
 
       options = { project_id: '1234', task_id: '4321', round_in_minutes: 15 }
 
-      formatter = HarvestFormatter.new(entry, options)
+      formatter = HarvestFormatter.new(entry, config)
 
       expect(formatter.format).to include({
         notes: entry[:note],

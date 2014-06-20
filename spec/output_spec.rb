@@ -22,6 +22,5 @@ describe 'HarvestOutput' do
     expect(output.generate).to include(
       "Failed (Unknown alias 'unknown'): doing some work @unknown"
     )
-
   end
 end

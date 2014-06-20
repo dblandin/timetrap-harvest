@@ -20,7 +20,7 @@ describe 'Timetrap::Formatters::Harvest' do
       formatter.config = config
 
       expect(fake_client).to receive(:post)
-      expect(formatter.output).to eq('Submitted: working on stuff @design')
+      expect(formatter.output).to include('Submitted: working on stuff @design')
     end
 
     it 'it does not submit entries without an alias' do
@@ -37,7 +37,7 @@ describe 'Timetrap::Formatters::Harvest' do
       formatter.client = fake_client
 
       expect(fake_client).to_not receive(:post)
-      expect(formatter.output).to be_empty
+      expect(formatter.output).to include('Submitted: 0')
     end
 
     it 'will display an error message when a code config is missing' do
@@ -56,8 +56,8 @@ describe 'Timetrap::Formatters::Harvest' do
       formatter.config = config
 
       expect(fake_client).to_not receive(:post)
-      expect(formatter.output).to eq(
-        "Failed (missing code config): working on stuff @unknown"
+      expect(formatter.output).to include(
+        "Failed (Unable to submit entry): working on stuff @unknown"
       )
     end
   end
