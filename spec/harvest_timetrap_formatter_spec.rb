@@ -35,8 +35,7 @@ describe 'Timetrap::Formatters::Harvest' do
       formatter = Timetrap::Formatters::Harvest.new([entry])
 
       config = { 'harvest' => { 'round_in_minutes' => 15 } }
-
-      formatter.timetrap_config = config
+      formatter.config = config
 
       expect(formatter.format(entry, 1, 1)).to include({
         notes: entry[:note],
@@ -63,7 +62,7 @@ describe 'Timetrap::Formatters::Harvest' do
 
       config = { 'harvest' => { 'aliases' => { 'design' => '123456 987654' } } }
 
-      formatter.timetrap_config = config
+      formatter.config = config
 
       expect(fake_client).to receive(:post)
       expect(formatter.output).to eq('Submitted: working on stuff @design')
@@ -84,6 +83,27 @@ describe 'Timetrap::Formatters::Harvest' do
 
       expect(fake_client).to_not receive(:post)
       expect(formatter.output).to be_empty
+    end
+
+    it 'will display an error message when a code config is missing' do
+      fake_client = double(:fake_client)
+
+      entry = fake_entry(
+        note:  'working on stuff @unknown',
+        start: Time.now,
+        end:   Time.now
+      )
+
+      formatter = Timetrap::Formatters::Harvest.new([entry])
+      formatter.client = fake_client
+
+      config = { 'harvest' => { 'aliases' => {} } }
+      formatter.config = config
+
+      expect(fake_client).to_not receive(:post)
+      expect(formatter.output).to eq(
+        "Failed (missing code config): working on stuff @unknown"
+      )
     end
   end
 

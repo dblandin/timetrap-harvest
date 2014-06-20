@@ -7,11 +7,7 @@ begin
 rescue NameError
   module Timetrap;
     module Formatters; end
-    module Config
-      def self.[](key)
-        {}
-      end
-    end
+    Config = { 'harvest' => { } }
   end
 end
 
@@ -43,7 +39,7 @@ class Timetrap::Formatters::Harvest
   DEFAULT_ROUND_IN_MINUTES = 15
 
   attr_reader :entries
-  attr_writer :client, :timetrap_config
+  attr_writer :client, :config
 
   def initialize(entries)
     @entries = entries
@@ -62,7 +58,7 @@ class Timetrap::Formatters::Harvest
   end
 
   def output
-    entries_to_output = []
+    output_messages = []
 
     harvest_entries do |harvestable|
       if info = info_for_code(harvestable.code)
@@ -70,11 +66,21 @@ class Timetrap::Formatters::Harvest
 
         client.post(payload)
 
-        entries_to_output << harvestable.entry
+        output_messages << success(harvestable.entry)
+      else
+        output_messages << missing_code(harvestable.entry)
       end
     end
 
-    generate_ouput(entries_to_output)
+    output_messages.join("\n")
+  end
+
+  def success(entry)
+    "Submitted: #{entry[:note]}"
+  end
+
+  def missing_code(entry)
+    "Failed (missing code config): #{entry[:note]}"
   end
 
   def generate_ouput(entries)
@@ -123,14 +129,14 @@ class Timetrap::Formatters::Harvest
   end
 
   def round_in_minutes
-    @round_in_seconds ||= timetrap_config['harvest']['round_in_minutes'] || DEFAULT_ROUND_IN_MINUTES
+    @round_in_seconds ||= config['harvest']['round_in_minutes'] || DEFAULT_ROUND_IN_MINUTES
   end
 
   def harvest_aliases
-    @harvest_aliases ||= timetrap_config['harvest']['aliases']
+    @harvest_aliases ||= config['harvest']['aliases']
   end
 
-  def timetrap_config
-    @timetrap_config ||= Timetrap::Config
+  def config
+    @config ||= Timetrap::Config
   end
 end
