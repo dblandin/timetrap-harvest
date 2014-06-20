@@ -1,6 +1,7 @@
 require_relative './harvest_timetrap_formatter/config'
 require_relative './harvest_timetrap_formatter/http_client'
 require_relative './harvest_timetrap_formatter/formatter'
+require_relative './harvest_timetrap_formatter/output'
 
 begin
   Module.const_get('Timetrap')

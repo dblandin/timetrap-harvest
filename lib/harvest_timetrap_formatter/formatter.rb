@@ -27,7 +27,7 @@ class HarvestFormatter
     hours   = (rounded / 60)
   end
 
-  def round(minutes, nearest = round_in_minutes)
-    (minutes % nearest).zero? ? minutes : (minutes + nearest) - (minutes % nearest)
+  def round(value, nearest = round_in_minutes)
+    (value % nearest).zero? ? value : (value + nearest) - (value % nearest)
   end
 end
