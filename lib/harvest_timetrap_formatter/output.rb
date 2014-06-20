@@ -14,7 +14,7 @@ class HarvestOutput
 
     unless submitted.empty?
       messages << SUBMITTED_HEADER
-      messages += submitted.map { |submitted| success_message(submitted[:note]) }
+      messages += submitted.map { |submitted| success_message(submitted[:notes]) }
     end
 
     unless failed.empty?

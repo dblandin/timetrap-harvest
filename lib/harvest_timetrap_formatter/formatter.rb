@@ -19,7 +19,7 @@ class HarvestFormatter
         spent_at:   entry[:start].strftime('%Y%m%d')
       }
     else
-      { error: 'Unable to submit entry' }
+      { error: 'Unable to submit entry', note: entry[:note] }
     end
   end
 

@@ -2,7 +2,7 @@ require_relative '../lib/harvest_timetrap_formatter/output'
 
 describe 'HarvestOutput' do
   it 'prints out submitted entries' do
-    results = { submitted: [{ note: 'doing some work @code' }] }
+    results = { submitted: [{ notes: 'doing some work @code' }] }
 
     output = HarvestOutput.new(results)
 
