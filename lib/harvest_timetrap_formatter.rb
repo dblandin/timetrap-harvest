@@ -47,18 +47,6 @@ class Timetrap::Formatters::Harvest
     @entries = entries
   end
 
-  def client
-    @client ||= HarvestClient.new(harvest_email, harvest_password)
-  end
-
-  def harvest_email
-    Timetrap::Config['harvest']['email']
-  end
-
-  def harvest_password
-    Timetrap::Config['harvest']['password']
-  end
-
   def output
     ensure_config!
 
@@ -79,25 +67,16 @@ class Timetrap::Formatters::Harvest
     output_messages.join("\n")
   end
 
-  def ensure_config!
-    raise MissingHarvestConfig 'Missing harvest key in .timetrap.yml config file' if config.nil? || !config.key?('harvest')
+  def format(entry, project_id, task_id)
+    { notes:      entry[:note],
+      hours:      hours_for_time(entry[:start], entry[:end]),
+      project_id: project_id,
+      task_id:    task_id,
+      spent_at:   entry[:start].strftime('%Y%m%d')
+    }
   end
 
-  def ensure_aliases!
-    raise MissingHarvestAliases 'Missing aliases key in .timetrap.yml config file' if config['harvest']['aliases'].nil?
-  end
-
-  def success(entry)
-    "Submitted: #{entry[:note]}"
-  end
-
-  def missing_code(entry)
-    "Failed (missing code config): #{entry[:note]}"
-  end
-
-  def generate_ouput(entries)
-    entries.map { |entry| "Submitted: #{entry[:note]}" }.join("\n")
-  end
+  private
 
   def harvest_entries
     entries.each do |entry|
@@ -111,27 +90,6 @@ class Timetrap::Formatters::Harvest
     end
   end
 
-  def format(entry, project_id, task_id)
-    { notes:      entry[:note],
-      hours:      hours_for_time(entry[:start], entry[:end]),
-      project_id: project_id,
-      task_id:    task_id,
-      spent_at:   entry[:start].strftime('%Y%m%d')
-    }
-  end
-
-  def hours_for_time(start_time, end_time)
-    minutes = (end_time - start_time) / 60
-    rounded = round(minutes)
-    hours   = (rounded / 60)
-  end
-
-  def round(minutes, nearest = round_in_minutes)
-    (minutes % nearest).zero? ? minutes : (minutes + nearest) - (minutes % nearest)
-  end
-
-  private
-
   def info_for_code(code)
     ensure_aliases!
 
@@ -142,12 +100,50 @@ class Timetrap::Formatters::Harvest
     end
   end
 
+  def hours_for_time(start_time, end_time)
+    minutes = (end_time - start_time) / 60
+    rounded = round(minutes)
+    hours   = (rounded / 60)
+  end
+
+  def ensure_config!
+    raise MissingHarvestConfig 'Missing harvest key in .timetrap.yml config file' if config.nil? || !config.key?('harvest')
+  end
+
+  def ensure_aliases!
+    raise MissingHarvestAliases 'Missing aliases key in .timetrap.yml config file' if config['harvest']['aliases'].nil?
+  end
+
+  def client
+    @client ||= HarvestClient.new(harvest_email, harvest_password)
+  end
+
+  def success(entry)
+    "Submitted: #{entry[:note]}"
+  end
+
+  def missing_code(entry)
+    "Failed (missing code config): #{entry[:note]}"
+  end
+
+  def round(minutes, nearest = round_in_minutes)
+    (minutes % nearest).zero? ? minutes : (minutes + nearest) - (minutes % nearest)
+  end
+
+  def harvest_email
+    config['harvest']['email']
+  end
+
+  def harvest_password
+    config['harvest']['password']
+  end
+
   def round_in_minutes
-    @round_in_seconds ||= config['harvest']['round_in_minutes'] || DEFAULT_ROUND_IN_MINUTES
+    config['harvest']['round_in_minutes'] || DEFAULT_ROUND_IN_MINUTES
   end
 
   def harvest_aliases
-    @harvest_aliases ||= config['harvest']['aliases']
+    config['harvest']['aliases']
   end
 
   def config
