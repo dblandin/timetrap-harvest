@@ -1,8 +1,18 @@
 require 'net/http'
 require 'json'
+require 'uri'
 
-module Timetrap;
-  module Formatters; end
+begin
+  Module.const_get('Timetrap')
+rescue NameError
+  module Timetrap;
+    module Formatters; end
+    module Config
+      def self.[](key)
+        {}
+      end
+    end
+  end
 end
 
 class HarvestClient
