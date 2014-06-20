@@ -64,24 +64,30 @@ class Timetrap::Formatters::Harvest
   def output
     entries_to_output = []
 
-    harvest_entries do |entry, code|
-      if info = info_for_code(code)
-        payload = format(entry, info.project_id, info.task_id)
+    harvest_entries do |harvestable|
+      if info = info_for_code(harvestable.code)
+        payload = format(harvestable.entry, info.project_id, info.task_id)
 
         client.post(payload)
 
-        entries_to_output << entry
+        entries_to_output << harvestable.entry
       end
     end
 
-    entries_to_output.map { |entry| "Submitted: #{entry[:note]}" }.join("\n")
+    generate_ouput(entries_to_output)
+  end
+
+  def generate_ouput(entries)
+    entries.map { |entry| "Submitted: #{entry[:note]}" }.join("\n")
   end
 
   def harvest_entries
     entries.each do |entry|
       if entry[:start] && entry[:end]
         if match = HARVESTABLE_REGEX.match(entry[:note])
-          yield entry, match[1]
+          code = match[1]
+
+          yield OpenStruct.new(entry: entry, code: code)
         end
       end
     end
