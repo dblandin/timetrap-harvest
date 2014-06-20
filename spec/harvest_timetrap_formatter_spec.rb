@@ -105,6 +105,19 @@ describe 'Timetrap::Formatters::Harvest' do
         "Failed (missing code config): working on stuff @unknown"
       )
     end
+
+     it 'handles a missing harvest config' do
+        entry = fake_entry(
+          note:  'working on stuff @code',
+          start: Time.now,
+          end:   Time.now
+        )
+
+       formatter = Timetrap::Formatters::Harvest.new([entry])
+       formatter.config = nil
+
+       expect(-> { formatter.output }).to raise_error
+     end
   end
 
   def fake_entry(options = {})

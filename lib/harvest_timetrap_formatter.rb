@@ -37,6 +37,8 @@ end
 class Timetrap::Formatters::Harvest
   HARVESTABLE_REGEX        = /@(.*)/
   DEFAULT_ROUND_IN_MINUTES = 15
+  MissingHarvestConfig     = Class.new(StandardError)
+  MissingHarvestAliases    = Class.new(StandardError)
 
   attr_reader :entries
   attr_writer :client, :config
@@ -58,6 +60,8 @@ class Timetrap::Formatters::Harvest
   end
 
   def output
+    ensure_config!
+
     output_messages = []
 
     harvest_entries do |harvestable|
@@ -73,6 +77,14 @@ class Timetrap::Formatters::Harvest
     end
 
     output_messages.join("\n")
+  end
+
+  def ensure_config!
+    raise MissingHarvestConfig 'Missing harvest key in .timetrap.yml config file' if config.nil? || !config.key?('harvest')
+  end
+
+  def ensure_aliases!
+    raise MissingHarvestAliases 'Missing aliases key in .timetrap.yml config file' if config['harvest']['aliases'].nil?
   end
 
   def success(entry)
@@ -121,6 +133,8 @@ class Timetrap::Formatters::Harvest
   private
 
   def info_for_code(code)
+    ensure_aliases!
+
     if alias_config = harvest_aliases[code]
       alias_config = alias_config.split(' ')
 
