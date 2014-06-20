@@ -46,10 +46,10 @@ class HarvestConfig
   end
 
   def ensure_config!
-    raise(MissingHarvestConfig, 'Missing harvest key in .timetrap.yml config file') if timetrap_config.nil? || timetrap_config['harvest'].nil?
+    fail(MissingHarvestConfig, 'Missing harvest key in .timetrap.yml config file') if timetrap_config.nil? || timetrap_config['harvest'].nil?
   end
 
   def ensure_aliases!
-    raise(MissingHarvestAliases, 'Missing aliases key in .timetrap.yml config file') if config['aliases'].nil?
+    fail(MissingHarvestAliases, 'Missing aliases key in .timetrap.yml config file') if config['aliases'].nil?
   end
 end
