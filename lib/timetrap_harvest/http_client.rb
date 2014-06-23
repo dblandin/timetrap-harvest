@@ -5,10 +5,10 @@ require 'uri'
 class HarvestClient
   attr_reader :email, :password, :subdomain
 
-  def initialize(email, password, subdomain)
-    @email     = email
-    @password  = password
-    @subdomain = subdomain
+  def initialize(config)
+    @email     = config.email
+    @password  = config.password
+    @subdomain = config.subdomain
   end
 
   def post(payload)

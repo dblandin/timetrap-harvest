@@ -37,6 +37,6 @@ class Timetrap::Formatters::Harvest
   end
 
   def client
-    @client ||= HarvestClient.new(config.email, config.password, config.subdomain)
+    @client ||= HarvestClient.new(config)
   end
 end
