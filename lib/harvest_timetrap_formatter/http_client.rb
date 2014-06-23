@@ -12,7 +12,7 @@ class HarvestClient
   end
 
   def post(payload)
-    req = Net::HTTP::Post.new(HARVEST_ADD_URI.request_uri)
+    req = Net::HTTP::Post.new(harvest_add_uri.request_uri)
     req.basic_auth(email, password)
     req.body            = payload.to_json
     req['Content-Type'] = 'application/json'
