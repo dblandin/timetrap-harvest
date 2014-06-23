@@ -16,8 +16,10 @@ class HarvestFormatter
         task_id:    task_id.to_i,
         spent_at:   entry[:start].strftime('%Y%m%d')
       }
+    elsif code
+      { error: 'Missing task alias config', note: entry[:note] }
     else
-      { error: 'Unable to submit entry', note: entry[:note] }
+      { error: 'No task alias provided', note: entry[:note] }
     end
   end
 

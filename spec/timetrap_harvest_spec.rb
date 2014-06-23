@@ -57,7 +57,7 @@ describe 'Timetrap::Formatters::Harvest' do
 
       expect(fake_client).to_not receive(:post)
       expect(formatter.output).to include(
-        "Failed (Unable to submit entry): working on stuff @unknown"
+        "Failed (Missing task alias config): working on stuff @unknown"
       )
     end
   end

@@ -13,14 +13,14 @@ describe 'HarvestOutput' do
   it 'prints out failed submissions' do
     results = { failed: [{
       note: 'doing some work @unknown',
-      error: "Unknown alias 'unknown'"
+      error: 'Missing task alias config'
     }] }
 
     output = HarvestOutput.new(results)
 
     expect(output.generate).to include('Failed: 1')
     expect(output.generate).to include(
-      "Failed (Unknown alias 'unknown'): doing some work @unknown"
+      "Failed (Missing task alias config): doing some work @unknown"
     )
   end
 end
