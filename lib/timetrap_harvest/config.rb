@@ -1,6 +1,7 @@
 class HarvestConfig
   MissingHarvestConfig     = Class.new(StandardError)
   MissingHarvestAliases    = Class.new(StandardError)
+  MissingHarvestSubdomain  = Class.new(StandardError)
   DEFAULT_ROUND_IN_MINUTES = 15
 
   attr_reader :timetrap_config
@@ -18,6 +19,8 @@ class HarvestConfig
   end
 
   def subdomain
+    ensure_subdomain!
+
     config['subdomain']
   end
 
@@ -51,5 +54,9 @@ class HarvestConfig
 
   def ensure_aliases!
     fail(MissingHarvestAliases, 'Missing aliases key in .timetrap.yml config file') if config['aliases'].nil?
+  end
+
+  def ensure_subdomain!
+    fail(MissingHarvestSubdomain, 'Missing subdomain key in .timetrap.yml config file') if config['subdomain'].nil?
   end
 end
