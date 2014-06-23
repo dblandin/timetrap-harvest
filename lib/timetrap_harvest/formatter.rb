@@ -1,4 +1,4 @@
-class HarvestFormatter
+class TimetrapHarvest::Formatter
   HARVESTABLE_REGEX = /@(.*)/
 
   attr_reader :entry, :config

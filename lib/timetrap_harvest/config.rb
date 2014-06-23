@@ -1,4 +1,4 @@
-class HarvestConfig
+class TimetrapHarvest::Config
   MissingHarvestConfig     = Class.new(StandardError)
   MissingHarvestAliases    = Class.new(StandardError)
   MissingHarvestSubdomain  = Class.new(StandardError)

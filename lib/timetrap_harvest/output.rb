@@ -1,4 +1,4 @@
-class HarvestOutput
+class TimetrapHarvest::Output
   LINE_DIVIDER     = '-' * 80
   SUBMITTED_HEADER = "Submitted entries\n#{LINE_DIVIDER}"
   FAILED_HEADER    = "Failed entries\n#{LINE_DIVIDER}"

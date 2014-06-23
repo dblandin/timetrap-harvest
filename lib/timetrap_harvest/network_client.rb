@@ -2,7 +2,7 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-class HarvestClient
+class TimetrapHarvest::NetworkClient
   attr_reader :email, :password, :subdomain
 
   def initialize(config)

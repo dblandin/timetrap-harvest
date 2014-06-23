@@ -1,4 +1,4 @@
-class Harvester
+class TimetrapHarvest::Harvester
   attr_reader :results, :client
 
   def initialize(results, client)

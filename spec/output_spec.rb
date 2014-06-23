@@ -4,7 +4,7 @@ describe 'HarvestOutput' do
   it 'prints out submitted entries' do
     results = { submitted: [{ notes: 'doing some work @code' }] }
 
-    output = HarvestOutput.new(results)
+    output = TimetrapHarvest::Output.new(results)
 
     expect(output.generate).to include('Submitted: 1')
     expect(output.generate).to include('Submitted: doing some work @code')
@@ -16,7 +16,7 @@ describe 'HarvestOutput' do
       error: 'Missing task alias config'
     }] }
 
-    output = HarvestOutput.new(results)
+    output = TimetrapHarvest::Output.new(results)
 
     expect(output.generate).to include('Failed: 1')
     expect(output.generate).to include(
