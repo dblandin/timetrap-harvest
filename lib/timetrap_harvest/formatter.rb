@@ -1,5 +1,3 @@
-require_relative './config'
-
 class HarvestFormatter
   HARVESTABLE_REGEX = /@(.*)/
 

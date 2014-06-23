@@ -1,4 +1,4 @@
-require_relative '../lib/harvest_timetrap_formatter/output'
+require_relative '../lib/timetrap_harvest/output'
 
 describe 'HarvestOutput' do
   it 'prints out submitted entries' do

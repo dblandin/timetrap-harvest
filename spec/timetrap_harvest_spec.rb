@@ -1,4 +1,4 @@
-require_relative '../lib/harvest_timetrap_formatter.rb'
+require_relative '../lib/timetrap-harvest'
 require 'ostruct'
 
 describe 'Timetrap::Formatters::Harvest' do

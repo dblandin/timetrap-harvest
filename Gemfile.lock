@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    harvest-timetrap-formatter (0.0.0)
+    timetrap-harvest (0.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -31,6 +31,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  harvest-timetrap-formatter!
   pry
   rspec
+  timetrap-harvest!
