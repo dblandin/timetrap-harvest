@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/dblandin/timetrap-harvest'
   s.license     = 'MIT'
 
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'pry'
+  s.add_runtime_dependency 'timetrap', '~> 1.7', '>= 1.7.0'
+
+  s.add_development_dependency 'rspec', '~> 3.0',  '>= 3.0.0'
+  s.add_development_dependency 'pry',   '~> 0.10', '>= 0.10.0'
 end
