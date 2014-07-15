@@ -40,6 +40,7 @@ harvest:
   email:     'email@example.com'
   password:  'password'
   subdomain: 'company'
+  round_in_minutes: 30 # defaults to 15
   aliases:
     code:   '[project id] [task id]'
     design: '[project id] [task id]'
