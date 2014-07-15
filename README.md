@@ -5,7 +5,7 @@ A Harvest formatter for Timetrap
 timetrap-harvest bridges the gap between your entries in Timetrap and your
 project tasks in Harvest allowing for incredible easy timesheet submissions.
 
-[![Gem Version](https://badge.fury.io/rb/timetrap-harvest.png)](http://badge.fury.io/rb/timetrap-harvest)
+[![Gem Version](https://badge.fury.io/rb/timetrap-harvest.svg)](http://badge.fury.io/rb/timetrap-harvest)
 [![Code Climate](https://codeclimate.com/github/dblandin/timetrap-harvest.png)](https://codeclimate.com/github/dblandin/timetrap-harvest)
 [![Build Status](https://travis-ci.org/dblandin/timetrap-harvest.png?branch=master)](https://travis-ci.org/dblandin/timetrap-harvest)
 
