@@ -1,3 +1,4 @@
+require_relative './timetrap_harvest/version'
 require_relative './timetrap_harvest/config'
 require_relative './timetrap_harvest/network_client'
 require_relative './timetrap_harvest/formatter'
