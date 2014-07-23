@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    timetrap-harvest (1.0.0)
+    timetrap-harvest (1.0.1)
       timetrap (~> 1.7, >= 1.7.0)
 
 GEM
