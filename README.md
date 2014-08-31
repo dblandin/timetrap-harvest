@@ -25,9 +25,9 @@ $ timetrap display --start 'last monday' --end 'last friday' --format harvest
 ## Installation
 
 ```bash
-$ gem install harvest-timetrap
+$ gem install timetrap-harvest
 
-$ echo "require 'harvest-timetrap'" > ./path/to/formatters/harvest.rb
+$ echo "require 'timetrap-harvest'" > ./path/to/formatters/harvest.rb
 ```
 
 ## Configuration
