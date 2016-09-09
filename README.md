@@ -1,5 +1,7 @@
 # timetrap-harvest
 
+bump
+
 A Harvest formatter for Timetrap
 
 `timetrap-harvest` bridges the gap between your entries in Timetrap and your
