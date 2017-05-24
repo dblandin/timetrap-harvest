@@ -60,6 +60,27 @@ describe 'Timetrap::Formatters::Harvest' do
         "Failed (Missing task alias config): working on stuff @unknown"
       )
     end
+
+    it 'will display an error message when an entry is running' do
+      fake_client = double(:fake_client)
+
+      entry = fake_entry(
+        note:  'working on stuff @unknown',
+        start: Time.now,
+        end:   nil
+      )
+
+      formatter = Timetrap::Formatters::Harvest.new([entry])
+      formatter.client = fake_client
+
+      config = TimetrapHarvest::Config.new({ 'harvest' => { 'aliases' => {} } })
+      formatter.config = config
+
+      expect(fake_client).to_not receive(:post)
+      expect(formatter.output).to include(
+        "Failed (Entry not ended yet): working on stuff @unknown"
+      )
+    end
   end
 
   def fake_entry(options = {})

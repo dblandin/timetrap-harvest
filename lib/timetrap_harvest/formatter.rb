@@ -9,13 +9,15 @@ class TimetrapHarvest::Formatter
   end
 
   def format
-    if alias_config
+    if alias_config && entry[:end]
       { notes:      entry[:note],
         hours:      hours_for_time(entry[:start], entry[:end]),
         project_id: project_id.to_i,
         task_id:    task_id.to_i,
         spent_at:   entry[:start].strftime('%Y%m%d')
       }
+    elsif !entry[:end]
+      { error: 'Entry not ended yet', note: entry[:note] }
     elsif code
       { error: 'Missing task alias config', note: entry[:note] }
     else
