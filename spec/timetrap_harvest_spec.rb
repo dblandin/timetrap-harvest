@@ -23,21 +23,34 @@ describe 'Timetrap::Formatters::Harvest' do
       expect(formatter.output).to include('Submitted: working on stuff @design')
     end
 
-    it 'it does not submit entries without an alias' do
-      fake_client = double(:fake_client)
+    context 'with or without alias' do
+      let(:fake_client) { double(:fake_client) }
+      let (:date) { Time.new(2002, 10, 31, 2, 2, 2, '+00:00') }
+      let(:entries) { [fake_entry(note: 'stuff', start: date, end: date)] }
+      let(:formatter) { Timetrap::Formatters::Harvest.new(entries) }
 
-      entries = []
-      entries << fake_entry(
-        note:  'working on stuff',
-        start: Time.now,
-        end:   Time.now
-      )
+      before(:each) do
+        formatter.client = fake_client
+      end
 
-      formatter = Timetrap::Formatters::Harvest.new(entries)
-      formatter.client = fake_client
+      it 'it does not submit entries without an alias' do
+        expect(fake_client).to_not receive(:post)
+        expect(formatter.output).to include('Submitted: 0')
+      end
 
-      expect(fake_client).to_not receive(:post)
-      expect(formatter.output).to include('Submitted: 0')
+      it 'submits entries missing an alias if default_task alias was defined' do
+        formatter.config = TimetrapHarvest::Config.new({
+          'harvest' => {
+            'aliases' => {
+              'default_task' => '1234 9876',
+            }
+          }
+        })
+
+
+        expect(fake_client).to receive(:post).with(any_args)
+        expect(formatter.output).to include('Submitted: 1')
+      end
     end
 
     it 'will display an error message when a code config is missing' do
@@ -52,7 +65,7 @@ describe 'Timetrap::Formatters::Harvest' do
       formatter = Timetrap::Formatters::Harvest.new([entry])
       formatter.client = fake_client
 
-      config = TimetrapHarvest::Config.new({ 'harvest' => { 'aliases' => {} } })
+      config = TimetrapHarvest::Config.new({ 'harvest' => { 'aliases' => { 'default_task' => '1234 9876' } } })
       formatter.config = config
 
       expect(fake_client).to_not receive(:post)

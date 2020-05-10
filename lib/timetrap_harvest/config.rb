@@ -29,7 +29,11 @@ class TimetrapHarvest::Config
   end
 
   def alias_config(code)
-    if config = aliases[code]
+    config = (code.nil? && aliases.has_key?('default_task')) ?
+      aliases['default_task'] :
+      aliases[code]
+
+    if config
       config = config.split(' ')
 
       { project_id: config.first, task_id: config.last }
