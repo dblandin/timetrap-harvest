@@ -11,8 +11,8 @@ class TimetrapHarvest::Harvester
       if result.key? :error
         failed << result
       else
-        client.post(result)
-
+        id = client.fetch(result)
+        client.create_or_update(id, result)
         submitted << result
       end
     end
