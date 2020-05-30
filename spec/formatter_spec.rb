@@ -3,16 +3,20 @@ require_relative '../lib/timetrap_harvest/config'
 require 'ostruct'
 
 describe 'HarvestFormatter' do
-  let(:config) do
-    TimetrapHarvest::Config.new({
-      'harvest' => {
-        'aliases' => { 'design' => '1234 4321' },
-        'round_in_minutes' => 15
-      }
-    })
+  def fake_entry(options = {})
+    OpenStruct.new(options)
   end
 
   describe '#format' do
+    let(:config) do
+      TimetrapHarvest::Config.new({
+        'harvest' => {
+          'aliases' => { 'design' => '1234 4321' },
+          'round_in_minutes' => 15
+        }
+      })
+    end
+
     it 'formats entries for the harvest api' do
       start = Time.local(2014, 06, 17)
 
@@ -56,9 +60,40 @@ describe 'HarvestFormatter' do
         spent_at: '20140617'
       })
     end
+  end
 
-    def fake_entry(options = {})
-      OpenStruct.new(options)
+  describe "#format with timetrap's duration computation" do
+    let(:config) do
+      TimetrapHarvest::Config.new({
+        'harvest' => {
+          'aliases' => { 'design' => '1234 4321' },
+          'use_timetrap_rounding' => true
+        }
+      })
+    end
+
+    it 'formats entries for the harvest api' do
+      start = Time.local(2014, 06, 17)
+
+      entry = fake_entry(
+        note:     'working on stuff @design',
+        start:    start,
+        end:      start + 60 * 60,
+        duration: 7200 # timetrap's computation
+      )
+
+      options = { project_id: '1234', task_id: '4321' }
+
+      formatter = TimetrapHarvest::Formatter.new(entry, config)
+
+      $debug = true
+      expect(formatter.format).to include({
+        notes: entry[:note],
+        hours: 2,
+        project_id: 1234,
+        task_id: 4321,
+        spent_at: '20140617'
+      })
     end
   end
 end

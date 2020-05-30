@@ -40,7 +40,8 @@ harvest:
   email:     'email@example.com'
   password:  'password'
   subdomain: 'company'
-  round_in_minutes: 30 # defaults to 15
+  use_timetrap_rounding: false # if set to true, use timetrap's computation (disables round_in_minutes option)
+  round_in_minutes: 30 # defaults to timetrap computation
   aliases:
     code:   '[project id] [task id]'
     design: '[project id] [task id]'
