@@ -24,6 +24,10 @@ class TimetrapHarvest::Config
     config['subdomain']
   end
 
+  def use_timetrap_rounding
+    config['use_timetrap_rounding'] || false
+  end
+
   def round_in_minutes
     config['round_in_minutes'] || DEFAULT_ROUND_IN_MINUTES
   end
