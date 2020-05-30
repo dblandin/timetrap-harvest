@@ -4,7 +4,7 @@ require 'ostruct'
 
 describe 'HarvestFormatter' do
   def fake_entry(options = {})
-    OpenStruct.new(options)
+    OpenStruct.new(options.merge(id: 50, sheet: 'test'))
   end
 
   describe '#format' do
@@ -26,8 +26,6 @@ describe 'HarvestFormatter' do
         end:   start + 60 * 60
       )
 
-      options = { project_id: '1234', task_id: '4321' }
-
       formatter = TimetrapHarvest::Formatter.new(entry, config)
 
       expect(formatter.format).to include({
@@ -35,7 +33,8 @@ describe 'HarvestFormatter' do
         hours: 1,
         project_id: 1234,
         task_id: 4321,
-        spent_at: '20140617'
+        spent_date: '2014-06-17',
+        external_reference: { id: 'timetrap-test-50', permalink: 'http://timetrap.local' }
       })
     end
 
@@ -48,8 +47,6 @@ describe 'HarvestFormatter' do
         end:   start + 10 * 60
       )
 
-      options = { project_id: '1234', task_id: '4321', round_in_minutes: 15 }
-
       formatter = TimetrapHarvest::Formatter.new(entry, config)
 
       expect(formatter.format).to include({
@@ -57,7 +54,8 @@ describe 'HarvestFormatter' do
         hours: 0.25,
         project_id: 1234,
         task_id: 4321,
-        spent_at: '20140617'
+        spent_date: '2014-06-17',
+        external_reference: { id: 'timetrap-test-50', permalink: 'http://timetrap.local' }
       })
     end
   end
@@ -82,17 +80,15 @@ describe 'HarvestFormatter' do
         duration: 7200 # timetrap's computation
       )
 
-      options = { project_id: '1234', task_id: '4321' }
-
       formatter = TimetrapHarvest::Formatter.new(entry, config)
 
-      $debug = true
       expect(formatter.format).to include({
         notes: entry[:note],
         hours: 2,
         project_id: 1234,
         task_id: 4321,
-        spent_at: '20140617'
+        spent_date: '2014-06-17',
+        external_reference: { id: 'timetrap-test-50', permalink: 'http://timetrap.local' }
       })
     end
   end

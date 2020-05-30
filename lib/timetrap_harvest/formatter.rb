@@ -10,11 +10,15 @@ class TimetrapHarvest::Formatter
 
   def format
     if alias_config && entry[:end]
-      { notes:      entry[:note],
-        hours:      hours_for_time,
-        project_id: project_id.to_i,
-        task_id:    task_id.to_i,
-        spent_at:   entry[:start].strftime('%Y%m%d')
+      { notes:              entry[:note],
+        hours:              hours_for_time,
+        project_id:         project_id.to_i,
+        task_id:            task_id.to_i,
+        spent_date:         entry[:start].strftime('%Y-%m-%d'),
+        external_reference: {
+          id: "timetrap-#{entry.sheet}-#{entry.id}",
+          permalink: "http://timetrap.local"
+        }
       }
     elsif !entry[:end]
       { error: 'Entry not ended yet', note: entry[:note] }

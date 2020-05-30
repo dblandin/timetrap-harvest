@@ -19,7 +19,8 @@ describe 'Timetrap::Formatters::Harvest' do
 
       formatter.config = config
 
-      expect(fake_client).to receive(:post)
+      expect(fake_client).to receive(:fetch)
+      expect(fake_client).to receive(:create_or_update)
       expect(formatter.output).to include('Submitted: working on stuff @design')
     end
 
@@ -48,7 +49,8 @@ describe 'Timetrap::Formatters::Harvest' do
         })
 
 
-        expect(fake_client).to receive(:post).with(any_args)
+        expect(fake_client).to receive(:fetch)
+        expect(fake_client).to receive(:create_or_update)
         expect(formatter.output).to include('Submitted: 1')
       end
     end
